@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather/app_router.dart';
 import 'package:weather/weather/weather.dart';
 import 'package:weather_repository/weather_repository.dart';
 
@@ -17,6 +18,17 @@ class WeatherPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Weather'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              Navigator.of(context).pushNamed(AppRouter.search);
+            },
+          ),
+        ],
+      ),
       body: Center(
         child: BlocBuilder<WeatherCubit, WeatherState>(
           builder: (context, state) {
