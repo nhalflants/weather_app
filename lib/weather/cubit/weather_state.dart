@@ -1,6 +1,6 @@
 part of 'weather_cubit.dart';
 
-class WeatherState {
+class WeatherState extends Equatable {
   WeatherState({
     this.status = WeatherStatus.initial,
     this.temperatureUnits = TemperatureUnits.celsius,
@@ -22,6 +22,9 @@ class WeatherState {
       weather: weather ?? this.weather,
     );
   }
+
+  @override
+  List<Object?> get props => [status, temperatureUnits, weather];
 }
 
 enum WeatherStatus { initial, loading, success, failure }
