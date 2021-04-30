@@ -23,8 +23,12 @@ class WeatherPageView extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.of(context).pushNamed(AppRouter.search);
+            onPressed: () async {
+              await Navigator.of(context)
+                  .pushNamed(AppRouter.search)
+                  .then((city) {
+                context.read<WeatherCubit>().fetchWeather(city.toString());
+              });
             },
           ),
         ],

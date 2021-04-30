@@ -5,7 +5,7 @@ part 'weather.g.dart';
 /// {@template weather}
 /// A model containing data about the weather.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Weather {
   const Weather({
     required this.id,

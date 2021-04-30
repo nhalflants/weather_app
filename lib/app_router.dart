@@ -12,7 +12,6 @@ class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case weather:
-        Object? selectedCity = settings.arguments;
         return MaterialPageRoute(
           builder: (_) => WeatherPage(),
         );
