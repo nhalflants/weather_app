@@ -24,16 +24,6 @@ class LocationCubit extends Cubit<LocationState> {
       default:
         return emitLocationDenied();
     }
-    // if (locationPermission == LocationAccess.allowed) {
-    //   final position = await _locationService.getCurrentPosition();
-    //   emit(state.copyWith(
-    //     locationAccess: LocationAccess.allowed,
-    //     latitude: position.latitude,
-    //     longitude: position.longitude,
-    //   ));
-    // } else {
-    //   emit(state.copyWith(locationAccess: locationPermission));
-    // }
   }
 
   void emitLocationNotActivated() => emit(LocationNotActivated());

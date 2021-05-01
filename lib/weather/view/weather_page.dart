@@ -32,7 +32,7 @@ class WeatherPageView extends StatelessWidget {
               await Navigator.of(context)
                   .pushNamed(AppRouter.search)
                   .then((city) {
-                context.read<WeatherCubit>().fetchWeather(city.toString());
+                context.read<WeatherCubit>().fetchCityWeather(city.toString());
               });
             },
           ),

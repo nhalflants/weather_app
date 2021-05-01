@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:weather/location/location.dart';
 import 'package:weather/weather/models/weather.dart';
+import 'package:weather/weather/weather.dart';
 import 'package:weather_repository/weather_repository.dart'
     show WeatherRepository;
 
@@ -18,7 +19,7 @@ class WeatherCubit extends Cubit<WeatherState> {
         super(WeatherState()) {
     _locationSubscription = _locationCubit.stream.listen((state) {
       if (state is LocationAllowed) {
-        fetchWeather('London');
+        fetchLatLngWeather(state.latitude, state.longitude);
       }
     });
   }
@@ -28,26 +29,77 @@ class WeatherCubit extends Cubit<WeatherState> {
   final LocationCubit _locationCubit;
   late final StreamSubscription _locationSubscription;
 
-  Future<void> fetchWeather(String? city) async {
+  double temperatureToUnit(double temperature) =>
+      state.temperatureUnits.isFahrenheit
+          ? temperature.toFahrenheit()
+          : temperature;
+
+  void emitWeatherModel(Weather weatherModel) {
+    emit(state.copyWith(
+      status: WeatherStatus.success,
+      temperatureUnits: state.temperatureUnits,
+      weather: weatherModel.copyWith(
+          temperature: temperatureToUnit(weatherModel.temperature)),
+    ));
+  }
+
+  Future<void> fetchLatLngWeather(double lat, double lng) async {
+    emit(state.copyWith(status: WeatherStatus.loading));
+    try {
+      final weather = await _weatherRepository.getWeatherForLatLng(
+          lat.toStringAsFixed(3), lng.toStringAsFixed(3));
+      final weatherModel = Weather.fromRepository(weather);
+      emitWeatherModel(weatherModel);
+    } on Exception {
+      emit(state.copyWith(status: WeatherStatus.failure));
+    }
+  }
+
+  Future<void> fetchCityWeather(String? city) async {
     if (city == null || city.isEmpty) return;
 
     emit(state.copyWith(status: WeatherStatus.loading));
 
     try {
-      final weather = await _weatherRepository.getWeather(city);
+      final weather = await _weatherRepository.getWeatherForCity(city);
       final weatherModel = Weather.fromRepository(weather);
-      final units = state.temperatureUnits;
-      final tempValue = units.isFahrenheit
-          ? weather.temperature.toFahrenheit()
-          : weather.temperature.toCelsius();
-
-      emit(state.copyWith(
-        status: WeatherStatus.success,
-        temperatureUnits: units,
-        weather: weatherModel.copyWith(temperature: tempValue),
-      ));
+      emitWeatherModel(weatherModel);
     } on Exception {
       emit(state.copyWith(status: WeatherStatus.failure));
+    }
+  }
+
+  Future<void> refreshWeather() async {
+    if (state.status != WeatherStatus.success) return;
+    if (state.weather == Weather.empty) return;
+    try {
+      final weather =
+          await _weatherRepository.getWeatherForCity(state.weather.location);
+      final weatherModel = Weather.fromRepository(weather);
+      emitWeatherModel(weatherModel);
+    } on Exception {
+      emit(state);
+    }
+  }
+
+  void toggleUnits() {
+    final units = state.temperatureUnits.isFahrenheit
+        ? TemperatureUnits.celsius
+        : TemperatureUnits.fahrenheit;
+
+    if (state.status != WeatherStatus.success) {
+      emit(state.copyWith(temperatureUnits: units));
+      return;
+    }
+
+    if (state.weather != Weather.empty) {
+      final temp = units.isFahrenheit
+          ? state.weather.temperature.toFahrenheit()
+          : state.weather.temperature.toCelsius();
+      emit(state.copyWith(
+        temperatureUnits: units,
+        weather: state.weather.copyWith(temperature: temperatureToUnit(temp)),
+      ));
     }
   }
 

@@ -14,22 +14,33 @@ class MetaWeatherApiClient {
   static const _baseUrl = 'www.metaweather.com';
   final http.Client _httpClient;
 
+  /// Search a [Location] `/api/location/search/?lattlong=(lat),(lng)`.
+  Future<Location> searchLocationByLatLng(String lat, String lng) async {
+    final locationRequest = Uri.https(_baseUrl, '/api/location/search',
+        <String, String>{'lattlong': '$lat,$lng'});
+    final locationResponse = await _httpClient.get(locationRequest);
+
+    return _getLocation(locationResponse);
+  }
+
   /// Search a [Location] `/api/location/search/?query=(query)`.
-  Future<Location> searchLocation(String query) async {
+  Future<Location> searchLocationByCityName(String query) async {
     final locationRequest = Uri.https(
         _baseUrl, '/api/location/search', <String, String>{'query': query});
     final locationResponse = await _httpClient.get(locationRequest);
 
+    return _getLocation(locationResponse);
+  }
+
+  Location _getLocation(http.Response locationResponse) {
     if (locationResponse.statusCode != 200) {
       throw LocationRequestFailure();
     }
-
     final locationJson = jsonDecode(locationResponse.body) as List;
 
     if (locationJson.isEmpty) {
       throw LocationRequestFailure();
     }
-
     return Location.fromJson(locationJson.first as Map<String, dynamic>);
   }
 

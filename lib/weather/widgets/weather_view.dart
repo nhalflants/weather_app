@@ -16,7 +16,10 @@ class WeatherView extends StatelessWidget {
     return SingleChildScrollView(
       child: Center(
         child: Column(
-          children: [Text(weather.location)],
+          children: [
+            Text(weather.location),
+            Text('${weather.temperature}'),
+          ],
         ),
       ),
     );

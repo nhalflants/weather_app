@@ -7,8 +7,17 @@ class WeatherRepository {
   WeatherRepository({MetaWeatherApiClient? weatherApiClient})
       : _weatherApiClient = weatherApiClient ?? MetaWeatherApiClient();
 
-  Future<Weather> getWeather(String city) async {
-    final location = await _weatherApiClient.searchLocation(city);
+  Future<Weather> getWeatherForCity(String city) async {
+    final location = await _weatherApiClient.searchLocationByCityName(city);
+    return await _fetchLocationWeather(location);
+  }
+
+  Future<Weather> getWeatherForLatLng(String lat, String lng) async {
+    final location = await _weatherApiClient.searchLocationByLatLng(lat, lng);
+    return await _fetchLocationWeather(location);
+  }
+
+  Future<Weather> _fetchLocationWeather(Location location) async {
     final locationId = location.id;
     final weather = await _weatherApiClient.getWeather(locationId);
     return Weather(
