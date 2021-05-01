@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:bloc/bloc.dart';
 import 'package:weather/app/app.dart';
 import 'package:weather/app/app_bloc_observer.dart';
+import 'package:weather/location/location.dart';
 import 'package:weather_repository/weather_repository.dart';
 
 void main() {
@@ -21,6 +22,7 @@ void main() {
     runApp(
       App(
         weatherRepository: WeatherRepository(),
+        locationService: LocationService(),
       ),
     );
   }, (Object error, StackTrace stackTrace) {

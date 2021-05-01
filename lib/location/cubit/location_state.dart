@@ -1,28 +1,30 @@
 part of 'location_cubit.dart';
 
-class LocationState extends Equatable {
-  LocationState({
-    this.locationAccess = LocationAccess.unknown,
+@immutable
+abstract class LocationState {}
+
+class LocationInitial extends LocationState {}
+
+class LocationDenied extends LocationState {}
+
+class LocationNotActivated extends LocationState {}
+
+class LocationAllowed extends LocationState {
+  LocationAllowed({
     this.latitude = 0.0,
     this.longitude = 0.0,
   });
 
-  final LocationAccess locationAccess;
   final double latitude;
   final double longitude;
 
   LocationState copyWith({
-    LocationAccess? locationAccess,
     double? latitude,
     double? longitude,
   }) {
-    return LocationState(
-      locationAccess: locationAccess ?? this.locationAccess,
+    return LocationAllowed(
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
     );
   }
-
-  @override
-  List<Object?> get props => [locationAccess, latitude, longitude];
 }

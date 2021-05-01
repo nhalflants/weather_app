@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:weather/location/location.dart';
 import 'package:weather/weather/models/weather.dart';
 import 'package:weather_repository/weather_repository.dart'
     show WeatherRepository;
@@ -6,9 +10,23 @@ import 'package:weather_repository/weather_repository.dart'
 part 'weather_state.dart';
 
 class WeatherCubit extends Cubit<WeatherState> {
-  WeatherCubit(this._weatherRepository) : super(WeatherState());
+  WeatherCubit({
+    required WeatherRepository weatherRepository,
+    required LocationCubit locationCubit,
+  })   : _weatherRepository = weatherRepository,
+        _locationCubit = locationCubit,
+        super(WeatherState()) {
+    _locationSubscription = _locationCubit.stream.listen((state) {
+      if (state is LocationAllowed) {
+        fetchWeather('London');
+      }
+    });
+  }
 
   final WeatherRepository _weatherRepository;
+
+  final LocationCubit _locationCubit;
+  late final StreamSubscription _locationSubscription;
 
   Future<void> fetchWeather(String? city) async {
     if (city == null || city.isEmpty) return;
@@ -31,6 +49,12 @@ class WeatherCubit extends Cubit<WeatherState> {
     } on Exception {
       emit(state.copyWith(status: WeatherStatus.failure));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _locationSubscription.cancel();
+    return super.close();
   }
 }
 

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather/app_router.dart';
+import 'package:weather/location/location.dart';
 import 'package:weather/weather/weather.dart';
-import 'package:weather_repository/weather_repository.dart';
 
 class WeatherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WeatherCubit(context.read<WeatherRepository>()),
-      child: WeatherPageView(),
+    return BlocBuilder<LocationCubit, LocationState>(
+      builder: (context, state) {
+        if (state is LocationInitial) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return WeatherPageView();
+        }
+      },
     );
   }
 }

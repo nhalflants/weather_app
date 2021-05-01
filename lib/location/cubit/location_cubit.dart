@@ -1,25 +1,51 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:weather/location/location_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:weather/location/repository/location_service.dart';
 
 part 'location_state.dart';
 
 class LocationCubit extends Cubit<LocationState> {
-  LocationCubit(this._locationService) : super(LocationState());
+  LocationCubit({required locationService})
+      : _locationService = locationService,
+        super(LocationInitial());
 
   final LocationService _locationService;
 
   Future<void> getCurrentLocation() async {
     final locationPermission = await _locationService.getLocationPermission();
-    if (locationPermission == LocationAccess.allowed) {
-      final position = await _locationService.getCurrentPosition();
-      emit(state.copyWith(
-        locationAccess: LocationAccess.allowed,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      ));
-    } else {
-      emit(state.copyWith(locationAccess: locationPermission));
+
+    switch (locationPermission) {
+      case LocationAccess.notActivated:
+        return emitLocationNotActivated();
+      case LocationAccess.allowed:
+        return emitLocationAllowed();
+      case LocationAccess.denied:
+      case LocationAccess.deniedForever:
+      default:
+        return emitLocationDenied();
     }
+    // if (locationPermission == LocationAccess.allowed) {
+    //   final position = await _locationService.getCurrentPosition();
+    //   emit(state.copyWith(
+    //     locationAccess: LocationAccess.allowed,
+    //     latitude: position.latitude,
+    //     longitude: position.longitude,
+    //   ));
+    // } else {
+    //   emit(state.copyWith(locationAccess: locationPermission));
+    // }
+  }
+
+  void emitLocationNotActivated() => emit(LocationNotActivated());
+
+  void emitLocationDenied() => emit(LocationDenied());
+
+  void emitLocationAllowed() async {
+    final position = await _locationService.getCurrentPosition();
+    print(position);
+    return emit(LocationAllowed(
+      latitude: position.latitude,
+      longitude: position.longitude,
+    ));
   }
 }

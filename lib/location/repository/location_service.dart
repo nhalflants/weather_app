@@ -5,7 +5,6 @@ enum LocationAccess {
   deniedForever, // Location permissions are denied forever
   allowed,
   notActivated, // Request users to enable the location services.
-  unknown,
 }
 
 class LocationService {
@@ -38,6 +37,6 @@ class LocationService {
 
   Future<Position> getCurrentPosition() async =>
       await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.lowest,
+        desiredAccuracy: LocationAccuracy.low,
       );
 }
