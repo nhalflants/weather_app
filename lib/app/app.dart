@@ -36,11 +36,6 @@ class App extends StatelessWidget {
         ),
       ),
     ], child: WeatherApp());
-    // return BlocProvider(
-    //   create: (weatherCubitContext) =>
-    //       WeatherCubit(weatherRepository: _weatherRepository),
-    //   child: WeatherApp(),
-    // );
   }
 }
 

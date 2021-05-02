@@ -1,25 +1,28 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:weather/location/location.dart';
 import 'package:weather/weather/models/weather.dart';
 import 'package:weather/weather/weather.dart';
 import 'package:weather_repository/weather_repository.dart'
     show WeatherRepository;
 
+part 'weather_cubit.g.dart';
 part 'weather_state.dart';
 
-class WeatherCubit extends Cubit<WeatherState> {
+class WeatherCubit extends HydratedCubit<WeatherState> {
   WeatherCubit({
     required WeatherRepository weatherRepository,
     required LocationCubit locationCubit,
   })   : _weatherRepository = weatherRepository,
         _locationCubit = locationCubit,
         super(WeatherState()) {
-    _locationSubscription = _locationCubit.stream.listen((state) {
-      if (state is LocationAllowed) {
-        fetchLatLngWeather(state.latitude, state.longitude);
+    _locationSubscription = _locationCubit.stream.listen((locationState) {
+      if (locationState is LocationAllowed &&
+          state.status != WeatherStatus.success) {
+        fetchLatLngWeather(locationState.latitude, locationState.longitude);
       }
     });
   }
@@ -108,6 +111,13 @@ class WeatherCubit extends Cubit<WeatherState> {
     _locationSubscription.cancel();
     return super.close();
   }
+
+  @override
+  WeatherState fromJson(Map<String, dynamic> json) =>
+      WeatherState.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson(WeatherState state) => state.toJson();
 }
 
 extension on double {

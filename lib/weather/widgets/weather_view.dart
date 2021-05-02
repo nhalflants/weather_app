@@ -13,15 +13,22 @@ class WeatherView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned(
+          child: Image.asset('assets/welcome.jpg'),
+        ),
+        SafeArea(
+            child: Column(
           children: [
             Text(weather.location),
-            Text('${weather.temperature}'),
+            Text(
+              '${weather.temperature}',
+            ),
           ],
-        ),
-      ),
+        ))
+      ],
     );
   }
 }

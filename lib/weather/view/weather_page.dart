@@ -7,24 +7,17 @@ import 'package:weather/weather/weather.dart';
 class WeatherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocationCubit, LocationState>(
-      builder: (context, state) {
-        if (state is LocationInitial) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-          return WeatherPageView();
-        }
-      },
-    );
-  }
-}
-
-class WeatherPageView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Weather'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.search,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -38,25 +31,40 @@ class WeatherPageView extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: BlocBuilder<WeatherCubit, WeatherState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case WeatherStatus.initial:
-                return const WeatherInitial();
-              case WeatherStatus.loading:
-                return const WeatherLoading();
-              case WeatherStatus.success:
-                return WeatherView(
-                  weather: state.weather,
-                  units: state.temperatureUnits,
-                );
-              case WeatherStatus.failure:
-              default:
-                return const WeatherError();
-            }
-          },
-        ),
+      body: BlocBuilder<LocationCubit, LocationState>(
+        builder: (context, state) {
+          if (state is LocationInitial) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return WeatherPageView();
+          }
+        },
+      ),
+    );
+  }
+}
+
+class WeatherPageView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: BlocBuilder<WeatherCubit, WeatherState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case WeatherStatus.initial:
+              return const WeatherInitial();
+            case WeatherStatus.loading:
+              return const WeatherLoading();
+            case WeatherStatus.success:
+              return WeatherView(
+                weather: state.weather,
+                units: state.temperatureUnits,
+              );
+            case WeatherStatus.failure:
+            default:
+              return const WeatherError();
+          }
+        },
       ),
     );
   }

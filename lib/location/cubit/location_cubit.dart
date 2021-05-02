@@ -31,11 +31,18 @@ class LocationCubit extends Cubit<LocationState> {
   void emitLocationDenied() => emit(LocationDenied());
 
   void emitLocationAllowed() async {
-    final position = await _locationService.getCurrentPosition();
-    print(position);
+    // TO DO: reset to device position
+    // final position = await _locationService.getCurrentPosition();
+    // print(position);
+
+    // return emit(LocationAllowed(
+    //   latitude: position.latitude,
+    //   longitude: position.longitude,
+    // ));
+
     return emit(LocationAllowed(
-      latitude: position.latitude,
-      longitude: position.longitude,
+      latitude: 50.848,
+      longitude: 4.3496,
     ));
   }
 }

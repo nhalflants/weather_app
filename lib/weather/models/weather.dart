@@ -1,11 +1,13 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'package:weather_repository/weather_repository.dart' hide Weather;
 import 'package:weather_repository/weather_repository.dart'
     as weather_repository;
 
+part 'weather.g.dart';
+
+@JsonSerializable()
 class Weather extends Equatable {
   const Weather({
     required this.condition,
@@ -13,6 +15,9 @@ class Weather extends Equatable {
     required this.location,
     required this.temperature,
   });
+
+  factory Weather.fromJson(Map<String, dynamic> json) =>
+      _$WeatherFromJson(json);
 
   factory Weather.fromRepository(weather_repository.Weather weather) {
     return Weather(
@@ -34,6 +39,8 @@ class Weather extends Equatable {
     temperature: 0.0,
     location: '-',
   );
+
+  Map<String, dynamic> toJson() => _$WeatherToJson(this);
 
   @override
   List<Object?> get props => [condition, lastUpdated, location, temperature];
