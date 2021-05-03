@@ -47,9 +47,3 @@ class AppTheme {
         systemNavigationBarDividerColor: Colors.transparent));
   }
 }
-
-extension ThemeExtras on ThemeData {
-  Color get particlesColor => brightness == Brightness.light
-      ? AppTheme.lightParticlesColor
-      : AppTheme.darkParticlesColor;
-}

@@ -13,22 +13,39 @@ class WeatherView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned(
-          child: Image.asset('assets/welcome.jpg'),
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 10.0,
+          right: 10.0,
+          top: 10.0,
         ),
-        SafeArea(
-            child: Column(
-          children: [
-            Text(weather.location),
-            Text(
-              '${weather.temperature}',
-            ),
-          ],
-        ))
-      ],
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            children: <Widget>[
+              Text(
+                weather.location.toUpperCase(),
+                style: Theme.of(context).textTheme.headline1!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                '${weather.temperature}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w200,
+                  letterSpacing: 5,
+                  fontSize: 25,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
