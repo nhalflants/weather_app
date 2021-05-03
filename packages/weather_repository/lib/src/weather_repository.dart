@@ -24,6 +24,13 @@ class WeatherRepository {
       temperature: weather.temp,
       location: location.title,
       condition: weather.weatherStateAbbr.toCondition,
+      state: weather.weatherStateAbbr,
+      stateDescription: weather.weatherStateName,
+      maxTemp: weather.maxTemp,
+      minTemp: weather.minTemp,
+      windSpeed: weather.windSpeed,
+      airPressure: weather.airPressure,
+      humidity: weather.humidity,
     );
   }
 }

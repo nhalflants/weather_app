@@ -9,17 +9,31 @@ part of 'weather.dart';
 Weather _$WeatherFromJson(Map<String, dynamic> json) {
   return Weather(
     condition: _$enumDecode(_$WeatherConditionEnumMap, json['condition']),
+    state: _$enumDecode(_$WeatherStateEnumMap, json['state']),
+    stateDescription: json['stateDescription'] as String,
     lastUpdated: DateTime.parse(json['lastUpdated'] as String),
     location: json['location'] as String,
     temperature: (json['temperature'] as num).toDouble(),
+    minTemp: (json['minTemp'] as num).toDouble(),
+    maxTemp: (json['maxTemp'] as num).toDouble(),
+    windSpeed: (json['windSpeed'] as num).toDouble(),
+    airPressure: (json['airPressure'] as num).toDouble(),
+    humidity: json['humidity'] as int,
   );
 }
 
 Map<String, dynamic> _$WeatherToJson(Weather instance) => <String, dynamic>{
       'condition': _$WeatherConditionEnumMap[instance.condition],
+      'state': _$WeatherStateEnumMap[instance.state],
+      'stateDescription': instance.stateDescription,
       'lastUpdated': instance.lastUpdated.toIso8601String(),
       'location': instance.location,
       'temperature': instance.temperature,
+      'minTemp': instance.minTemp,
+      'maxTemp': instance.maxTemp,
+      'windSpeed': instance.windSpeed,
+      'airPressure': instance.airPressure,
+      'humidity': instance.humidity,
     };
 
 K _$enumDecode<K, V>(
@@ -54,4 +68,18 @@ const _$WeatherConditionEnumMap = {
   WeatherCondition.cloudy: 'cloudy',
   WeatherCondition.snowy: 'snowy',
   WeatherCondition.unknown: 'unknown',
+};
+
+const _$WeatherStateEnumMap = {
+  api.WeatherState.snow: 'sn',
+  api.WeatherState.sleet: 'sl',
+  api.WeatherState.hail: 'h',
+  api.WeatherState.thunderstorm: 't',
+  api.WeatherState.heavyRain: 'hr',
+  api.WeatherState.lightRain: 'lr',
+  api.WeatherState.showers: 's',
+  api.WeatherState.heavyCloud: 'hc',
+  api.WeatherState.lightCloud: 'lc',
+  api.WeatherState.clear: 'c',
+  api.WeatherState.unknown: 'unknown',
 };

@@ -691,6 +691,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  weather_icons:
+    dependency: "direct main"
+    description:
+      name: weather_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0-nullsafety.0"
   weather_repository:
     dependency: "direct main"
     description:
